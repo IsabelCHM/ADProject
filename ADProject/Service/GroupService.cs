@@ -162,6 +162,10 @@ namespace ADProject.Service
                 .Include(g => g.RecipeGroups)
                 .ThenInclude(rg => rg.Recipe)
                 .ThenInclude(r => r.User)
+                .Include(g => g.RecipeGroups)
+                .ThenInclude(rg => rg.Recipe)
+                .ThenInclude(rt => rt.RecipeTags)
+                .ThenInclude(t => t.Tag)
                 .FirstOrDefaultAsync(g => g.GroupId == id);
 
             foreach (RecipeGroup r in group.RecipeGroups)
@@ -173,6 +177,14 @@ namespace ADProject.Service
 
                 r.Recipe.User = n;
 
+            }
+
+            foreach (RecipeGroup rg in group.RecipeGroups)
+            {
+                foreach (RecipeTag rt in rg.Recipe.RecipeTags)
+                {
+                    rt.Recipe = null;
+                }
             }
 
             return group;
